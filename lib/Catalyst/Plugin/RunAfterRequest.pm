@@ -1,7 +1,6 @@
 package Catalyst::Plugin::RunAfterRequest;
 
 use Moose::Role;
-use MooseX::AttributeHelpers;
 use MooseX::Types::Moose qw/ArrayRef CodeRef/;
 
 use namespace::autoclean;
@@ -9,25 +8,19 @@ use namespace::autoclean;
 our $VERSION = '0.03';
 
 has callbacks => (
-    metaclass => 'Collection::Array',
+    traits => ['Array'],
     isa       => ArrayRef[CodeRef],
     default   => sub { [] },
-    provides  => {
-        push => 'run_after_request',
-    },
-    curries   => {
-        map => {
-            _run_code_after_request => sub {
-                my ($self, $body) = @_;
-                $self->$body(sub { $self->$_ });
-            },
-        },
+    handles  => {
+        'run_after_request'           => 'push',
+        '_run_code_after_request_map' => 'map',
     },
 );
 
 after finalize => sub {
     my $self = shift;
-    $self->_run_code_after_request;
+
+    $self->_run_code_after_request_map(sub { $self->$_ });
 };
 
 =head1 NAME

@@ -12,7 +12,6 @@ requires 'Catalyst::Runtime', '5.80004';
 requires 'Catalyst::Test';
 requires 'Moose';
 requires 'Moose::Role';
-requires 'MooseX::AttributeHelpers';
 requires 'MooseX::Types::Moose';
 requires 'namespace::autoclean';
 
